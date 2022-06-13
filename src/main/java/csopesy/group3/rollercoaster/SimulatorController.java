@@ -17,7 +17,9 @@ public class SimulatorController {
     private int size;
 
     @FXML
-    public AnchorPane pane;
+    public AnchorPane panePassenger;
+    @FXML
+    public AnchorPane paneCar;
     @FXML
     public Button btnStart;
 
@@ -37,38 +39,78 @@ public class SimulatorController {
         int m = model.nCars;
         int C = model.nCapacity;
 
-        Circle[] passenger = new Circle[n];
-        Rectangle[] car = new Rectangle[m];
-
+        Circle[] passenger = new Circle[n];                     // circles will represent the passengers
+        AnimationTimer[] timerWander = new AnimationTimer[n];   // each passenger has their own timer
         for(int i = 0; i < n; i++) {
             // x and y data points are set to size since circles are set by their centers
             // this way, the sides of the circle is what considered the boundary
             passenger[i] = new Circle(size, size, size, Color.WHITE);
-            pane.getChildren().add(passenger[i]);
+            panePassenger.getChildren().add(passenger[i]);
             setPosition(passenger[i]);
+
+            int finalI = i;
+            timerWander[i] = new AnimationTimer() {
+                private long lastUpdate;
+                @Override
+                public void handle(long l) {
+                    // 1_000_000_000 (1M milliseconds) = 1 second
+                    if (l - lastUpdate >= 1_000_000_000) {
+                        wander(passenger[finalI]);
+                        lastUpdate = l;
+                    }
+                }
+            };
         }
 
-        // this allows the inside code to go into a loop
-        AnimationTimer timer = new AnimationTimer() {
-            private long lastUpdate = 0;
-            @Override
-            public void handle(long l) {
-                // 1_000_000_000 (1M milliseconds) = 1 second
-                if (l - lastUpdate >= 1_000_000_000) {
-                    roam(passenger[0]);
-                    lastUpdate = l;
-                }
-            }
-        };
-        timer.start();
+        Rectangle[] car = new Rectangle[m];                     // rectangles will represent the cars
+        AnimationTimer[] timerArrive = new AnimationTimer[n];   // each car has their own timer
+        AnimationTimer[] timerDepart = new AnimationTimer[n];   // each car has their own timer
+        for(int i = 0; i < m; i++) {
+            car[i] = new Rectangle(100, 200, Color.YELLOW);
+            car[i].setTranslateX(220);
+            car[i].setTranslateY(675);
+            paneCar.getChildren().add(car[i]);
 
+            int finalI = i;
+            timerArrive[i] = new AnimationTimer() {
+                private long lastUpdate;
+                @Override
+                public void handle(long l) {
+                    if (l - lastUpdate >= 100_000_000) {
+                        arrive(car[finalI]);
+                        lastUpdate = l;
+                    }
+                }
+            };
+
+            timerDepart[i] = new AnimationTimer() {
+                private long lastUpdate;
+                @Override
+                public void handle(long l) {
+                    if (l - lastUpdate >= 100_000_000) {
+                        depart(car[finalI]);
+                        lastUpdate = l;
+                    }
+                }
+            };
+        }
+
+        // call this to make passenger[0] start wandering
+        timerWander[0].start();
+        // call this to make passenger[0] stop wandering
+//        timerWander[0].stop();
     }
 
+    /**
+     * sets a random position within a specific area
+     *
+     * @param c is a circle representing a passenger
+     */
     private void setPosition(Circle c) {
         int minX = size;
-        int maxX = (int)pane.getWidth() - size;
+        int maxX = (int) panePassenger.getWidth() - (size * 2);
         int minY = size;
-        int maxY = (int)pane.getHeight() - size;
+        int maxY = (int) panePassenger.getHeight() - (size * 2);
         int x = ThreadLocalRandom.current().nextInt(minX, maxX + 1);
         int y = ThreadLocalRandom.current().nextInt(minY, maxY + 1);
 
@@ -76,46 +118,63 @@ public class SimulatorController {
         c.setTranslateY(y);
     }
 
-    private void roam(Circle c) {
+    /**
+     * allows a passenger to wander around a specific area
+     *
+     * @param c is a circle representing a passenger
+     */
+    private void wander(Circle c) {
+        int distance = 25;  // how far the circles will "walk"
+        double paneWidth = panePassenger.getWidth() - (size * 2);
+        double paneHeight = panePassenger.getHeight() - (size * 2);
         double x = c.getTranslateX();
         double y = c.getTranslateY();
-        double paneWidth = pane.getWidth() - size;
-        double paneHeight = pane.getHeight() - size;
 
         int action = ThreadLocalRandom.current().nextInt(0, 5 + 1);
         switch (action) {
             // cases 0 & 5 means circle will not move
             // move right
             case 1 -> {
-                c.setTranslateX(x + 10);
+                c.setTranslateX(x + distance);
                 if(c.getTranslateX() > paneWidth)
-                    c.setTranslateX(x - 10);
+                    c.setTranslateX(x - distance);
             }
 
             // move left
             case 2 -> {
-                c.setTranslateX(x - 10);
+                c.setTranslateX(x - distance);
                 if(c.getTranslateX() < 0)
-                    c.setTranslateX(x + 10);
+                    c.setTranslateX(x + distance);
             }
 
             // move up
             case 3 -> {
-                c.setTranslateY(y - 10);
+                c.setTranslateY(y - distance);
                 if(c.getTranslateY() < 0)
-                    c.setTranslateY(y + 10);
+                    c.setTranslateY(y + distance);
             }
 
             // move down
             case 4 -> {
-                c.setTranslateY(y + 10);
+                c.setTranslateY(y + distance);
                 if(c.getTranslateY() > paneHeight)
-                    c.setTranslateY(y - 10);
+                    c.setTranslateY(y - distance);
             }
         }
     }
 
-    private void carArrive() {
+    // TODO
+    private void arrive(Rectangle r) {
+
+    }
+
+    // TODO
+    private void depart(Rectangle r) {
+
+    }
+
+    // TODO
+    private void goToQueue(Circle c) {
 
     }
 }

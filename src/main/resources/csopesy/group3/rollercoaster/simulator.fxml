@@ -16,14 +16,14 @@
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
     </rowConstraints>
     <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4ba44b" height="675.0" stroke="TRANSPARENT" strokeType="INSIDE" width="850.0" GridPane.columnIndex="1" />
-    <AnchorPane prefHeight="200.0" prefWidth="200.0">
+    <AnchorPane fx:id="paneCar" prefHeight="200.0" prefWidth="200.0">
         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#808080" height="675.0" stroke="BLACK" strokeType="INSIDE" width="350.0" />
         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="100.0" layoutX="166.0" layoutY="71.0" stroke="#876c6c00" strokeType="INSIDE" width="20.0" />
         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="100.0" layoutX="166.0" layoutY="221.0" stroke="#876c6c00" strokeType="INSIDE" width="20.0" />
         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="100.0" layoutX="166.0" layoutY="371.0" stroke="#876c6c00" strokeType="INSIDE" width="20.0" />
         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="100.0" layoutX="166.0" layoutY="521.0" stroke="#876c6c00" strokeType="INSIDE" width="20.0" />
     </AnchorPane>
-    <AnchorPane fx:id="pane" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+    <AnchorPane fx:id="panePassenger" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
         <Button fx:id="btnStart" layoutX="224.0" layoutY="325.0" mnemonicParsing="false" onAction="#startSimulation" text="Start Simulation" />
     </AnchorPane>
 </GridPane>

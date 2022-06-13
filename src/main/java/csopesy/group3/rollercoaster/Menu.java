@@ -13,16 +13,14 @@ import java.io.IOException;
 
 public class Menu {
 
-    private RollerCoaster model;
-
     @FXML
     private TextField txtNumPassengers;
     @FXML
     private TextField txtNumCars;
     @FXML
     private TextField txtNumPassengersPerCar;
-    @FXML
-    private Button btnConfirm;
+//    @FXML
+//    private Button btnConfirm;
 
     @FXML
     protected void onConfirmClick(ActionEvent actionEvent) throws IOException {

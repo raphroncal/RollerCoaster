@@ -19,8 +19,6 @@ public class MenuController {
     private TextField txtNumCars;
     @FXML
     private TextField txtNumPassengersPerCar;
-//    @FXML
-//    private Button btnConfirm;
 
     @FXML
     protected void onConfirmClick(ActionEvent actionEvent) throws IOException {

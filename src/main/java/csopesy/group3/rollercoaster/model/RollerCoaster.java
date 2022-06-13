@@ -10,7 +10,7 @@ public class RollerCoaster {
 
     public final int nPassengers;
     public final int nCars;
-    public final int nPassengersPerCar;
+    public final int nCapacity;
 
     static Semaphore bq = new Semaphore(0); //board queue
     static Semaphore ubq = new Semaphore(0); //unboard queue
@@ -28,16 +28,16 @@ public class RollerCoaster {
 
     static int RemainingPassengers;
 
-    public RollerCoaster(int nPassengers, int nCars, int nPassengersPerCar) {
+    public RollerCoaster(int nPassengers, int nCars, int nCapacity) {
         this.nPassengers = nPassengers;
         this.nCars = nCars;
-        this.nPassengersPerCar = nPassengersPerCar;
+        this.nCapacity = nCapacity;
     }
 
     public void initialize() {
         System.out.println(nPassengers);
         System.out.println(nCars);
-        System.out.println(nPassengersPerCar);
+        System.out.println(nCapacity);
 
         // Set RemainingPassengers
         RemainingPassengers = nPassengers;
@@ -54,7 +54,7 @@ public class RollerCoaster {
         Passenger[] p = new Passenger[nPassengers];
         Thread[] pThread = new Thread[nPassengers];
 
-        Action action = new Action(nPassengers, nCars, nPassengersPerCar);
+        Action action = new Action(nPassengers, nCars, nCapacity);
 
         for (int i = 0; i < nPassengers; i++)
             p[i] = new Passenger(action, i, nCars);
@@ -69,7 +69,7 @@ public class RollerCoaster {
         Thread[] cThread = new Thread[nCars];
 
         for (int i = 0; i < nCars; i++)
-            c[i] = new Car(action, nPassengersPerCar, i, nCars);
+            c[i] = new Car(action, nCapacity, i, nCars);
 
         for (int i = 0; i < nCars; i++)
             cThread[i] = new Thread(c[i]);

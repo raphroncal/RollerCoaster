@@ -9,6 +9,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -22,6 +23,10 @@ public class SimulatorController {
     public AnchorPane paneCar;
     @FXML
     public Button btnStart;
+    @FXML
+    public Rectangle waitArea;
+    @FXML
+    public Text queueCount;
 
     public void initModel(RollerCoaster model) {
         if (this.model != null)
@@ -58,6 +63,7 @@ public class SimulatorController {
             paneCar.getChildren().add(car[i]);
         }
 
+        // TODO: call model method here and pass which car will drive to boarding area
         drive(car[0]);
     }
 
@@ -71,8 +77,16 @@ public class SimulatorController {
         int maxX = (int) panePassenger.getWidth() - (size * 2);
         int minY = size;
         int maxY = (int) panePassenger.getHeight() - (size * 2);
-        int x = ThreadLocalRandom.current().nextInt(minX, maxX + 1);
-        int y = ThreadLocalRandom.current().nextInt(minY, maxY + 1);
+        int waitAreaWidth = (int)waitArea.getWidth() + size;
+        int waitAreaHeight = (int)waitArea.getHeight() + size;
+        int x;
+        int y;
+
+        // makes sure that the circle does not enter the boarding area
+        do {
+            x = ThreadLocalRandom.current().nextInt(minX, maxX + 1);
+            y = ThreadLocalRandom.current().nextInt(minY, maxY + 1);
+        } while(x < waitAreaWidth && y > panePassenger.getHeight() - waitAreaHeight);
 
         c.setTranslateX(x);
         c.setTranslateY(y);
@@ -87,6 +101,8 @@ public class SimulatorController {
         int distance = 25;  // how far the circles will "walk"
         double paneWidth = panePassenger.getWidth() - (size * 2);
         double paneHeight = panePassenger.getHeight() - (size * 2);
+        int waitAreaWidth = (int)waitArea.getWidth() + size;
+        int waitAreaHeight = (int)waitArea.getHeight() + size;
 
         AnimationTimer animation = new AnimationTimer() {
             private long lastUpdate;
@@ -103,28 +119,30 @@ public class SimulatorController {
                         // move right
                         case 1 -> {
                             c.setTranslateX(x + distance);
-                            if(c.getTranslateX() > paneWidth)
+                            // first condition: prevent passenger from going out of bounds
+                            // second condition: prevent passenger from going into boarding area
+                            if((c.getTranslateX() > paneWidth) || (c.getTranslateX() < waitAreaWidth && c.getTranslateY() > paneHeight - waitAreaHeight))
                                 c.setTranslateX(x - distance);
                         }
 
                         // move left
                         case 2 -> {
                             c.setTranslateX(x - distance);
-                            if(c.getTranslateX() < size)
+                            if(c.getTranslateX() < size || (c.getTranslateX() < waitAreaWidth && c.getTranslateY() > paneHeight - waitAreaHeight))
                                 c.setTranslateX(x + distance);
                         }
 
                         // move up
                         case 3 -> {
                             c.setTranslateY(y - distance);
-                            if(c.getTranslateY() < size)
+                            if(c.getTranslateY() < size || (c.getTranslateX() < waitAreaWidth && c.getTranslateY() > paneHeight - waitAreaHeight))
                                 c.setTranslateY(y + distance);
                         }
 
                         // move down
                         case 4 -> {
                             c.setTranslateY(y + distance);
-                            if(c.getTranslateY() > paneHeight)
+                            if(c.getTranslateY() > paneHeight || (c.getTranslateX() < waitAreaWidth && c.getTranslateY() > paneHeight - waitAreaHeight))
                                 c.setTranslateY(y - distance);
                         }
                     }
@@ -133,10 +151,11 @@ public class SimulatorController {
                 }
 
                 // TODO: if condition for passenger to stop wandering and start waiting to board the ride
-//                    if(some condition) {
-//                        stop();
-//                        goToQueue(c);
-//                    }
+                // test condition
+                if(c.getTranslateX() > paneWidth / 2) {
+                    stop();
+                    goToQueue(c);
+                }
             }
         };
 
@@ -144,6 +163,40 @@ public class SimulatorController {
         animation.start();
         // call this to make this specific passenger start wandering
 //        animation.stop();
+        // TODO: call model and stop wandering when thread finished sleeping
+    }
+
+    /**
+     * simulates the passenger going to the waiting area by disappearing
+     *
+     * @param c is a circle representing a passenger
+     */
+    private void goToQueue(Circle c) {
+        double d = c.getOpacity() * 0.01;
+
+        // add counter to waiting queue
+        AnimationTimer animation = new AnimationTimer() {
+            private long lastUpdate;
+            @Override
+            public void handle(long l) {
+                if (l - lastUpdate >= 10_000_000) {
+                    c.setOpacity(c.getOpacity() - d);
+                    System.out.println(c.getOpacity());
+                    lastUpdate = l;
+                }
+
+                if(c.getOpacity() < 0) {
+                    stop();
+                    // TODO: call model and get number of passengers waiting to board
+                    // optional but i wanted a way to show that the people waiting are increasing
+//                    queueCount.setText(number of );
+                    int count = Integer.parseInt(queueCount.getText());
+                    queueCount.setText(String.valueOf(count + 1));
+                }
+            }
+        };
+
+        animation.start();
     }
 
     /**
@@ -158,19 +211,18 @@ public class SimulatorController {
             public void handle(long l) {
                 if (l - lastUpdate >= 10_000_000) {
                     double y = r.getTranslateY();
-                    System.out.println(y);
                     r.setTranslateY(y - 1);
 
                     lastUpdate = l;
                 }
 
                 // TODO: car stops and can start boarding passengers
-                if(r.getTranslateY() == 400.0) {
+                if(r.getTranslateY() == paneCar.getHeight() - waitArea.getHeight()) {
                     stop();
 
                     // TODO: model methods to board passengers
                     // after boarding passengers, car can now start driving again
-                    start();
+//                    start();
                 }
 
                 // reset car position when it goes out of bounds
@@ -193,10 +245,5 @@ public class SimulatorController {
     private void resetCarPosition(Rectangle r) {
         r.setTranslateX(220);
         r.setTranslateY(675);
-    }
-
-    // TODO
-    private void goToQueue(Circle c) {
-
     }
 }

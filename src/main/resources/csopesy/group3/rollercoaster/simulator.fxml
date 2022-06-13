@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.shape.Rectangle?>
+
+<AnchorPane prefHeight="675.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="csopesy.group3.rollercoaster.Simulator">
+   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4ba44b" height="675.0" stroke="BLACK" strokeType="INSIDE" width="1200.0" />
+   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#616161" height="675.0" layoutX="219.0" stroke="TRANSPARENT" strokeType="INSIDE" width="300.0" />
+   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="125.0" layoutX="353.0" layoutY="58.0" stroke="#ffffff00" strokeType="INSIDE" width="25.0" />
+   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="125.0" layoutX="355.0" layoutY="263.0" stroke="#ffffff00" strokeType="INSIDE" width="25.0" />
+   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="125.0" layoutX="355.0" layoutY="468.0" stroke="#ffffff00" strokeType="INSIDE" width="25.0" />
+   <Button fx:id="btnStart" layoutX="575.0" layoutY="322.0" mnemonicParsing="false" onAction="#startSimulation" text="Start Simulation" />
+</AnchorPane>

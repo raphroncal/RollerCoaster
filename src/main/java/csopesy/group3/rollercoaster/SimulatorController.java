@@ -39,17 +39,16 @@ public class SimulatorController {
         int m = model.nCars;
         int C = model.nCapacity;
 
-        Circle[] passenger = new Circle[n];                     // circles will represent the passengers
-        AnimationTimer[] timerWander = new AnimationTimer[n];   // each passenger has their own timer
+        // initialize circles
+        Circle[] passenger = new Circle[n];                         // circles will represent the passengers
+        AnimationTimer[] animationWander = new AnimationTimer[n];   // each passenger has their own timer
         for(int i = 0; i < n; i++) {
-            // x and y data points are set to size since circles are set by their centers
-            // this way, the sides of the circle is what considered the boundary
-            passenger[i] = new Circle(size, size, size, Color.WHITE);
+            passenger[i] = new Circle(0, 0, size, Color.WHITE);
             panePassenger.getChildren().add(passenger[i]);
             setPosition(passenger[i]);
 
             int finalI = i;
-            timerWander[i] = new AnimationTimer() {
+            animationWander[i] = new AnimationTimer() {
                 private long lastUpdate;
                 @Override
                 public void handle(long l) {
@@ -58,13 +57,20 @@ public class SimulatorController {
                         wander(passenger[finalI]);
                         lastUpdate = l;
                     }
+
+                    // TODO: if condition for passenger to stop wandering and start waiting to board the ride
+//                    if(some condition) {
+//                        stop();
+//                        goToQueue(passenger[finalI]);
+//                    }
                 }
             };
         }
 
-        Rectangle[] car = new Rectangle[m];                     // rectangles will represent the cars
-        AnimationTimer[] timerArrive = new AnimationTimer[n];   // each car has their own timer
-        AnimationTimer[] timerDepart = new AnimationTimer[n];   // each car has their own timer
+        boolean test = true;
+        // initialize rectangles
+        Rectangle[] car = new Rectangle[m];                         // rectangles will represent the cars
+        AnimationTimer[] animationArrive = new AnimationTimer[m];   // each car has their own timer
         for(int i = 0; i < m; i++) {
             car[i] = new Rectangle(100, 200, Color.YELLOW);
             car[i].setTranslateX(220);
@@ -72,33 +78,35 @@ public class SimulatorController {
             paneCar.getChildren().add(car[i]);
 
             int finalI = i;
-            timerArrive[i] = new AnimationTimer() {
+            animationArrive[i] = new AnimationTimer() {
                 private long lastUpdate;
                 @Override
                 public void handle(long l) {
-                    if (l - lastUpdate >= 100_000_000) {
-                        arrive(car[finalI]);
+                    if (l - lastUpdate >= 10_000_000) {
+                        drive(car[finalI]);
                         lastUpdate = l;
                     }
-                }
-            };
 
-            timerDepart[i] = new AnimationTimer() {
-                private long lastUpdate;
-                @Override
-                public void handle(long l) {
-                    if (l - lastUpdate >= 100_000_000) {
-                        depart(car[finalI]);
-                        lastUpdate = l;
+                    // TODO: car stops and can start boarding passengers
+                    if(car[finalI].getTranslateY() == 400.0) {
+                        stop();
+
+                        // TODO: model methods
+
+                        // after boarding passengers, car can now start driving again
+//                        start();
                     }
+
                 }
             };
         }
 
         // call this to make passenger[0] start wandering
-        timerWander[0].start();
+        animationWander[0].start();
         // call this to make passenger[0] stop wandering
-//        timerWander[0].stop();
+//        animationWander[0].stop();
+
+        animationArrive[0].start();
     }
 
     /**
@@ -163,14 +171,25 @@ public class SimulatorController {
         }
     }
 
-    // TODO
-    private void arrive(Rectangle r) {
-
+    /**
+     * drives the car upwards
+     *
+     * @param r is a rectangle representing a car;
+     */
+    private void drive(Rectangle r) {
+        double y = r.getTranslateY();
+        r.setTranslateY(y - 1);
     }
 
-    // TODO
-    private void depart(Rectangle r) {
-
+    /**
+     * used when the car goes out of bounds to set it back to the beginning
+     * and to make it seem as if the car drove to a circle
+     *
+     * @param r is a rectangle representing a car;
+     */
+    private void resetCarPosition(Rectangle r) {
+        r.setTranslateX(220);
+        r.setTranslateY(675);
     }
 
     // TODO

@@ -1,17 +1,17 @@
 package csopesy.group3.rollercoaster;
 
+import csopesy.group3.rollercoaster.model.RollerCoaster;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class Menu {
+public class MenuController {
 
     @FXML
     private TextField txtNumPassengers;
@@ -32,7 +32,7 @@ public class Menu {
         Scene simulatorScene = new Scene(simulatorFxml.load());
 
         RollerCoaster model = new RollerCoaster(nPassengers, nCars, nPassengersPerCar);
-        Simulator simulator = simulatorFxml.getController();
+        SimulatorController simulator = simulatorFxml.getController();
         simulator.initModel(model); // passing the model
 
         // showing the new window

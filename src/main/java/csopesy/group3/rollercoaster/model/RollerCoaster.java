@@ -1,4 +1,4 @@
-package csopesy.group3.rollercoaster;
+package csopesy.group3.rollercoaster.model;
 
 import java.util.concurrent.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -21,8 +21,8 @@ public class RollerCoaster {
     static Semaphore all_ab = new Semaphore(0); //All Aboard
     static Semaphore all_ash = new Semaphore(0); //All Ashore
 
-    static ArrayList<Semaphore> load_area = new ArrayList<Semaphore>();
-    static ArrayList<Semaphore> unload_area = new ArrayList<Semaphore>();
+    static ArrayList<Semaphore> load_area = new ArrayList<>();
+    static ArrayList<Semaphore> unload_area = new ArrayList<>();
 
     static SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss.SS");
 
@@ -157,7 +157,7 @@ public class RollerCoaster {
             try{
                 all_ab.acquire(); //wait for car to be full
                 System.out.println("["+formatter.format(Calendar.getInstance().getTime())+"]: "+"All aboard Car "+i+".");
-            } catch (InterruptedException E){};
+            } catch (InterruptedException E){}
         }
 
         void unload(int i){
@@ -166,7 +166,7 @@ public class RollerCoaster {
                 all_ash.acquire(); //wait for car to be empty
 
                 System.out.println("["+formatter.format(Calendar.getInstance().getTime())+"]: "+"All ashore Car "+i+".");
-            } catch (InterruptedException E){};
+            } catch (InterruptedException E){}
             this.passengers -= this.capacity;
 
             if (passengers < capacity) {
@@ -244,7 +244,7 @@ public class RollerCoaster {
                     System.out.println("["+formatter.format(Calendar.getInstance().getTime())+"]: "+"Passenger "+this.i+" cannot ride anymore and has left the park...");
                     bq.release();
                 }
-            } catch (InterruptedException E){};
+            } catch (InterruptedException E){}
 
         }
 

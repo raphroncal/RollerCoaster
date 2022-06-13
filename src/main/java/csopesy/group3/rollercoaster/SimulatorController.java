@@ -1,10 +1,11 @@
 package csopesy.group3.rollercoaster;
 
+import csopesy.group3.rollercoaster.model.RollerCoaster;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
-public class Simulator {
+public class SimulatorController {
     private RollerCoaster model;
 
     @FXML
